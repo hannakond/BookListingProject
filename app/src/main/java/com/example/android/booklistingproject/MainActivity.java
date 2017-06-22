@@ -20,31 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
-
-    private BookAdapter mAdapter;
-
+    private BookAdapter adapter;
     private SearchView search;
-
-    private String mQuery;
-
+    private String query;
     private TextView empty1;
-
     private TextView empty2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final List<Book> books = new ArrayList<Book>();
-
-        mAdapter = new BookAdapter(this, books);
+        adapter = new BookAdapter(this, books);
 
         ListView bookListView = (ListView) findViewById(R.id.list);
-        bookListView.setAdapter(mAdapter);
+        bookListView.setAdapter(adapter);
 
-        LinearLayout mEmptyStateView = (LinearLayout) findViewById(R.id.empty_view);
-        bookListView.setEmptyView(mEmptyStateView);
+        LinearLayout emptyStateView = (LinearLayout) findViewById(R.id.empty_view);
+        bookListView.setEmptyView(emptyStateView);
 
         empty1 = (TextView) findViewById(R.id.empty_1);
         empty2 = (TextView) findViewById(R.id.empty_2);
@@ -65,81 +58,67 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (isConnected) {
                     getLoaderManager().restartLoader(0, null, MainActivity.this);
-
                     return true;
-
                 } else {
                     empty1.setText(R.string.no_internet);
                     empty2.setVisibility(View.GONE);
-
                     return false;
                 }
             }
-
         });
 
         bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Uri link = Uri.parse(books.get(position).getLink());
                 Intent webIntent = new Intent(Intent.ACTION_VIEW, link);
-
                 if (webIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(webIntent);
                 }
             }
         });
-
     }
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        mQuery = search.getQuery().toString();
-
-        BookLoader loader = new BookLoader(this, mQuery);
+        query = search.getQuery().toString();
+        BookLoader loader = new BookLoader(this, query);
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        mAdapter.clear();
+        adapter.clear();
         if (books != null && !books.isEmpty()) {
-            mAdapter.addAll(books);
+            adapter.addAll(books);
         }
-
         empty1.setText(R.string.no_book_found);
         empty2.setText(R.string.try_another);
-
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-        mAdapter.clear();
+        adapter.clear();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        mQuery = search.getQuery().toString();
-        outState.putString("query", mQuery);
+        query = search.getQuery().toString();
+        outState.putString("query", query);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        mQuery = savedInstanceState.getString("query");
+        query = savedInstanceState.getString("query");
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-
 }

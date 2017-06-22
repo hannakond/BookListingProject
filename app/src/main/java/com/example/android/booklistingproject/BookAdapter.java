@@ -12,15 +12,12 @@ import android.widget.TextView;
 import java.util.List;
 
 public class BookAdapter extends ArrayAdapter<Book> {
-
     public BookAdapter(@NonNull Context context, @NonNull List<Book> books) {
         super(context, 0, books);
     }
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
         View listItemView = convertView;
 
         if (listItemView == null) {
@@ -36,6 +33,5 @@ public class BookAdapter extends ArrayAdapter<Book> {
         authorTextView.setText(currentBook.getAuthor());
 
         return listItemView;
-
     }
 }

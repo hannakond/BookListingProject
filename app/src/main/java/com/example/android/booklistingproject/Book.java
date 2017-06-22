@@ -1,28 +1,21 @@
 package com.example.android.booklistingproject;
 
 public class Book {
-
-    private String mAuthor;
-
-    private String mTitle;
-
-    private String mLink;
-
+    private String author;
+    private String title;
+    private String link;
     public Book(String author, String title, String link) {
-        mAuthor = author;
-        mTitle = title;
-        mLink = link;
+        this.author = author;
+        this.title = title;
+        this.link = link;
     }
-
     public String getAuthor() {
-        return mAuthor;
+        return author;
     }
-
     public String getTitle() {
-        return mTitle;
+        return title;
     }
-
     public String getLink() {
-        return mLink;
+        return link;
     }
 }
