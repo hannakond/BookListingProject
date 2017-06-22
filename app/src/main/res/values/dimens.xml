@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="layout_pad">10dp</dimen>
+    <dimen name="tview_pad">12dp</dimen>
+</resources>
