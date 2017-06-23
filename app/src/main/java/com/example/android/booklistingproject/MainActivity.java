@@ -42,20 +42,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         empty1 = (TextView) findViewById(R.id.empty_1);
         empty2 = (TextView) findViewById(R.id.empty_2);
 
-        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
-        final boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
-
         search = (SearchView) findViewById(R.id.search);
         search.setSubmitButtonEnabled(true);
-
-        if (isConnected) {
-            getLoaderManager().initLoader(0, null, this);
-        } else {
-            empty1.setText(R.string.no_internet);
-            empty2.setVisibility(View.GONE);
-        }
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -64,14 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (isConnected) {
-                    getLoaderManager().restartLoader(0, null, MainActivity.this);
-                    return true;
-                } else {
-                    empty1.setText(R.string.no_internet);
-                    empty2.setVisibility(View.GONE);
-                    return false;
-                }
+                return checkConnection();
             }
         });
 
@@ -85,6 +66,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
+
+        checkConnection();
+    }
+
+    private boolean checkConnection() {
+        final ConnectivityManager cm = (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        final boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            getLoaderManager().restartLoader(0, null, MainActivity.this);
+            return true;
+        } else {
+            empty1.setText(R.string.no_internet);
+            empty2.setVisibility(View.GONE);
+            return false;
+        }
     }
 
     @Override
