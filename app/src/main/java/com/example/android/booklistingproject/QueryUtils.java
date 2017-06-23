@@ -17,6 +17,7 @@ import java.util.List;
 
 public class QueryUtils {
     private static final String LOG_TAG = MainActivity.class.getName();
+    private static final String KEY_TITLE = "title";
 
     public static List<Book> fetchData(String query) {
         URL url = createUrl(query);
@@ -95,18 +96,17 @@ public class QueryUtils {
             JSONArray items = volumes.getJSONArray("items");
 
             for (int i = 0; i < items.length(); i++) {
-                JSONObject item = items.getJSONObject(i);
-                JSONObject volume = item.getJSONObject("volumeInfo");
-                String title = volume.getString("title");
+                final JSONObject item = items.getJSONObject(i);
+                final JSONObject volume = item.getJSONObject("volumeInfo");
+                final String title = volume.getString(KEY_TITLE);
                 String author;
                 if (volume.has("authors")) {
                     author = volume.getJSONArray("authors").get(0).toString();
                 } else {
                     author = "Unknown author";
                 }
-                String link = volume.getString("infoLink");
-
-                Book book = new Book(author, title, link);
+                final String link = volume.getString("infoLink");
+                final Book book = new Book(author, title, link);
                 books.add(book);
             }
         } catch (JSONException e) {
